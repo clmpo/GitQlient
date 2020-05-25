@@ -20,6 +20,8 @@ public:
 
    QStringList getReferences(Type type) const;
 
+   void removeReference(Type type, const QString &value);
+
    bool isEmpty() const { return mReferences.isEmpty(); }
 
 private:

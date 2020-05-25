@@ -45,6 +45,28 @@ void RevisionsCache::endCacheConfig()
    mCacheLocked = false;
 }
 
+void RevisionsCache::commit(CommitInfo c, const QString &localBranch)
+{
+   QMutexLocker locker(&mMutex);
+
+   c.setLanes(calculateLanes(c));
+
+   const auto commit = new CommitInfo(std::move(c));
+
+   mCommits.insert(1, commit);
+
+   mCommitsMap.insert(commit->sha(), commit);
+   mCommitsMap.insert(c.sha(), commit);
+
+   const auto parent = mCommitsMap.value(c.parent(0));
+   auto branches = parent->getReferences(References::Type::LocalBranch);
+
+   if (branches.contains(localBranch))
+      parent->removeReference(References::Type::LocalBranch, localBranch);
+
+   commit->addReference(References::Type::LocalBranch, localBranch);
+}
+
 void RevisionsCache::updateCommitSha(const QString &oldSha, CommitInfo c)
 {
    QMutexLocker locker(&mMutex);

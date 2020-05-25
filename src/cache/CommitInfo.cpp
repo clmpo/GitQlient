@@ -156,3 +156,8 @@ void CommitInfo::addReference(References::Type type, const QString &reference)
 {
    mReferences.addReference(type, reference);
 }
+
+void CommitInfo::removeReference(References::Type type, const QString &referenceToRemove)
+{
+   mReferences.removeReference(type, referenceToRemove);
+}

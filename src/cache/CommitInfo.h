@@ -79,6 +79,7 @@ public:
    int getActiveLane() const;
 
    void addReference(References::Type type, const QString &reference);
+   void removeReference(References::Type type, const QString &referenceToRemove);
    void addReferences(const References &refs) { mReferences = refs; }
    QStringList getReferences(References::Type type) const { return mReferences.getReferences(type); }
    References getAllReferences() const { return mReferences; }
