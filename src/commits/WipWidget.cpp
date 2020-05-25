@@ -76,6 +76,10 @@ bool WipWidget::commitChanges()
 
          lastMsgBeforeError = (ret.success ? "" : msg);
 
+         const auto newSha = mGit->getLastCommitInfo();
+         CommitInfo revision(newSha.output.toString());
+         mCache->updateCommitSha(mCurrentSha, std::move(revision));
+
          emit signalChangesCommitted(ret.success);
 
          done = true;
