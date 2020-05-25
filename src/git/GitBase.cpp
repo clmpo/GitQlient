@@ -79,3 +79,8 @@ GitExecResult GitBase::getLastCommit() const
 {
    return run("git rev-parse HEAD");
 }
+
+GitExecResult GitBase::getLastCommitInfo() const
+{
+   return run("git show -z --parents --no-color --pretty=format:%m%HX%P%n%cn<%ce>%n%an<%ae>%n%at%n%s%n%b");
+}

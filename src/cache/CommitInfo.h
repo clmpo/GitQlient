@@ -48,6 +48,9 @@ public:
    explicit CommitInfo(const QString &sha, const QStringList &parents, const QString &author, long long secsSinceEpoch,
                        const QString &log, const QString &longLog);
    explicit CommitInfo(const QByteArray &b);
+   explicit CommitInfo(const QString &c);
+   CommitInfo(const CommitInfo &commit);
+   CommitInfo &operator=(const CommitInfo &commit);
    bool operator==(const CommitInfo &commit) const;
    bool operator!=(const CommitInfo &commit) const;
 
@@ -58,6 +61,7 @@ public:
    QStringList parents() const { return mParentsSha; }
 
    QString sha() const { return mSha; }
+   void setSha(const QString &sha) { mSha = sha; }
    QString committer() const { return mCommitter; }
    QString author() const { return mAuthor; }
    QString authorDate() const { return QString::number(mCommitDate.toSecsSinceEpoch()); }
@@ -77,6 +81,7 @@ public:
    void addReference(References::Type type, const QString &reference);
    void addReferences(const References &refs) { mReferences = refs; }
    QStringList getReferences(References::Type type) const { return mReferences.getReferences(type); }
+   References getAllReferences() const { return mReferences; }
    bool hasReferences() const { return !mReferences.isEmpty(); }
 
    static const QString ZERO_SHA;

@@ -39,6 +39,61 @@ CommitInfo::CommitInfo(const QByteArray &b)
    }
 }
 
+CommitInfo::CommitInfo(const QString &c)
+{
+   const auto fields = c.split('\n');
+
+   if (fields.count() > 6)
+   {
+      auto combinedShas = fields.at(0);
+      auto sha = combinedShas.split('X').first();
+      mBoundaryInfo = sha.at(0);
+      sha.remove(0, 1);
+      mSha = sha;
+      combinedShas = combinedShas.remove(0, mSha.size() + 1 + 1);
+      mParentsSha = combinedShas.trimmed().split(' ', QString::SkipEmptyParts);
+      mCommitter = fields.at(1);
+      mAuthor = fields.at(2);
+      mCommitDate = QDateTime::fromSecsSinceEpoch(fields.at(3).toInt());
+      mShortLog = fields.at(4);
+   }
+}
+
+CommitInfo::CommitInfo(const CommitInfo &commit)
+{
+   mBoundaryInfo = commit.mBoundaryInfo;
+   mSha = commit.mSha;
+   mParentsSha = commit.mParentsSha;
+   mCommitter = commit.mCommitter;
+   mAuthor = commit.mAuthor;
+   mCommitDate = commit.mCommitDate;
+   mShortLog = commit.mShortLog;
+   mLongLog = commit.mLongLog;
+   mDiff = commit.mDiff;
+   mLanes = commit.mLanes;
+   mReferences = commit.mReferences;
+}
+
+CommitInfo &CommitInfo::operator=(const CommitInfo &commit)
+{
+   if (this != &commit)
+   {
+      mBoundaryInfo = commit.mBoundaryInfo;
+      mSha = commit.mSha;
+      mParentsSha = commit.mParentsSha;
+      mCommitter = commit.mCommitter;
+      mAuthor = commit.mAuthor;
+      mCommitDate = commit.mCommitDate;
+      mShortLog = commit.mShortLog;
+      mLongLog = commit.mLongLog;
+      mDiff = commit.mDiff;
+      mLanes = commit.mLanes;
+      mReferences = commit.mReferences;
+   }
+
+   return *this;
+}
+
 bool CommitInfo::operator==(const CommitInfo &commit) const
 {
    return (mSha == commit.mSha || mSha.startsWith(commit.sha()) || commit.sha().startsWith(mSha))

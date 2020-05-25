@@ -48,7 +48,7 @@ void CommitHistoryModel::onNewRevisions(int totalCommits)
    beginResetModel();
    endResetModel();
 
-   beginInsertRows(QModelIndex(), 0, totalCommits - 2);
+   beginInsertRows(QModelIndex(), 0, totalCommits - 1);
    endInsertRows();
 }
 

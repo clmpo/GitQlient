@@ -54,6 +54,8 @@ public:
 
    GitExecResult getLastCommit() const;
 
+   GitExecResult getLastCommitInfo() const;
+
 protected:
    QString mWorkingDirectory;
    QString mCurrentBranch;

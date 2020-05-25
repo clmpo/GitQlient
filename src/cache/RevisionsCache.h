@@ -54,6 +54,9 @@ public:
 
    void beginCacheConfig(int numElementsToStore);
    void endCacheConfig();
+   void updateCommitSha(const QString &oldSha, CommitInfo c);
+   void clearLanes();
+   void updateLanes();
    void clear();
 
    int count() const;

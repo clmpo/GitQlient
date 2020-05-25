@@ -113,8 +113,13 @@ bool AmendWidget::commitChanges()
          const auto ret = git->ammendCommit(files.getFiles(), files, msg, author);
          QApplication::restoreOverrideCursor();
 
-         emit signalChangesCommitted(ret.success);
-
+         if (ret.success)
+         {
+            const auto newSha = mGit->getLastCommitInfo();
+            CommitInfo revision(newSha.output.toString());
+            mCache->updateCommitSha(mCurrentSha, std::move(revision));
+            emit signalChangesCommitted(ret.success);
+         }
          done = true;
       }
    }

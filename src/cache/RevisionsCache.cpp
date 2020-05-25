@@ -45,6 +45,32 @@ void RevisionsCache::endCacheConfig()
    mCacheLocked = false;
 }
 
+void RevisionsCache::updateCommitSha(const QString &oldSha, CommitInfo c)
+{
+   QMutexLocker locker(&mMutex);
+
+   const auto commit = mCommitsMap[oldSha];
+   c.addReferences(commit->getAllReferences());
+   *commit = c;
+
+   mCommitsMap.remove(oldSha);
+   mCommitsMap.insert(c.sha(), commit);
+}
+
+void RevisionsCache::clearLanes()
+{
+   mLanes.clear();
+}
+
+void RevisionsCache::updateLanes()
+{
+   QMutexLocker locker(&mMutex);
+
+   for (const auto commit : mCommits)
+      if (commit != mCommits[0])
+         commit->setLanes(calculateLanes(*commit));
+}
+
 CommitInfo RevisionsCache::getCommitInfoByRow(int row) const
 {
    if (mCacheLocked)
@@ -248,14 +274,14 @@ void RevisionsCache::updateWipCommit(const QString &parentSha, const QString &di
    CommitInfo c(CommitInfo::ZERO_SHA, { parentSha }, author, QDateTime::currentDateTime().toSecsSinceEpoch(), log,
                 longLog);
 
-   if (mLanes.isEmpty())
-      mLanes.init(c.sha());
+   // if (mLanes.isEmpty())
+   mLanes.init(c.sha());
 
    c.setLanes(calculateLanes(c));
-
-   if (mCommits[0])
-      c.setLanes(mCommits[0]->getLanes());
-
+   /*
+      if (mCommits[0])
+         c.setLanes(mCommits[0]->getLanes());
+   */
    const auto sha = c.sha();
    const auto commit = new CommitInfo(std::move(c));
 

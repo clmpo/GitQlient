@@ -153,7 +153,15 @@ void GitQlientRepo::updateCache()
    {
       QLog_Debug("UI", QString("Updating the GitQlient UI"));
 
-      mGitLoader->loadRepository();
+      const auto totalCommits = mGitQlientCache->count();
+
+      mGitQlientCache->clearLanes();
+      mGitLoader->updateWipRevision();
+      mGitQlientCache->updateLanes();
+
+      mHistoryWidget->loadBranches();
+      mHistoryWidget->onNewRevisions(totalCommits);
+      mBlameWidget->onNewRevisions(totalCommits);
 
       mDiffWidget->reload();
    }
